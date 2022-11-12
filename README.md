@@ -47,5 +47,4 @@
 ## Profile
 * [x] Icon user
 * [x] Data user
-* [] ...
 * [x] Logout
