@@ -5,10 +5,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
-import 'package:redux/redux.dart';
 
 import '../../actions/index.dart';
-import '../../containers/auth/index.dart';
 import '../../models/index.dart';
 import '../../utils/constants.dart';
 import '../mixins/dialog_mixin.dart';

@@ -27,7 +27,6 @@
   * Icon user
 * [x] Filters
   * Genre
-  * Quality
 * [x] Films
 
 ## Hero page
@@ -37,7 +36,7 @@
 * [x] Date
 * [x] Length of the film
 * [x] Rating of film
-* [x] Review only if user auth
+* [x] Comment only if user auth
   * User name
   * DateTime
 
