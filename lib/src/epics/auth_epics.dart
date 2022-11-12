@@ -75,7 +75,8 @@ class AuthEpics {
   }
 
   Stream<AppAction> _uploadImage(Stream<UploadImage$> actions, EpicStore<AppState> store) {
-    return actions.flatMap((UploadImage$ action) => Stream<UploadImage$>.value(action)
+    return actions
+        .switchMap((UploadImage$ action) => Stream<UploadImage$>.value(action)
         .asyncMap((UploadImage$ action) => _api.uploadToStorage(action.email))
         .map((String photoUrl) => UploadImage.successful(photoUrl))
         .onErrorReturnWith((Object error, StackTrace t) => UploadImage.error(error, t)));

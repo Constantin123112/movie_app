@@ -1,5 +1,4 @@
 import 'dart:html';
-// import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/gestures.dart';
@@ -7,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import '../../actions/index.dart';
+import '../../containers/auth/index.dart';
 import '../../models/index.dart';
 import '../../utils/constants.dart';
 import '../mixins/dialog_mixin.dart';
@@ -22,7 +22,6 @@ class PhotoPage extends StatefulWidget {
 }
 
 class _PhotoPageState extends State<PhotoPage> with DialogMixin {
-  bool isLoading = false;
 
   void _onResponse(BuildContext context, AppAction action) {
     if (action is RegisterSuccessful) {
@@ -106,16 +105,15 @@ class _PhotoPageState extends State<PhotoPage> with DialogMixin {
                           height: 30,
                         ),
                         GestureDetector(
-                              onTap: uploadToStorage,
-                              child: CircleAvatar(
-                                backgroundImage: imageUrl != null
-                                    ? Image.network(imageUrl!).image
-                                    : const AssetImage('assets/icons/add-user.png'),
-                                backgroundColor: Colors.white.withOpacity(0.1),
-                                radius: 80,
-                              ),
-                            ),
-
+                          onTap: uploadToStorage,
+                          child: CircleAvatar(
+                            backgroundImage: imageUrl != null
+                                ? Image.network(imageUrl!).image
+                                : const AssetImage('assets/icons/add-user.png'),
+                            backgroundColor: Colors.white.withOpacity(0.1),
+                            radius: 80,
+                          ),
+                        ),
                         const SizedBox(
                           height: 20,
                         ),
@@ -174,60 +172,62 @@ class _PhotoPageState extends State<PhotoPage> with DialogMixin {
                             children: <Widget>[
                               // Register
 
-                              if (isLoading)
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width / 1.6,
-                                  height: 40,
-                                  child: TextButton(
-                                      style: ButtonStyle(
-                                        backgroundColor: MaterialStateProperty.all(kBackgroundColor),
-                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                          RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(18.0),
-                                              side: const BorderSide(color: Colors.transparent)),
+                              IsLoadingContainer(
+                                builder: (BuildContext context, bool isLoadingAuth) {
+                                  if (isLoadingAuth) {
+                                    return SizedBox(
+                                      width: MediaQuery.of(context).size.width / 1.6,
+                                      height: 40,
+                                      child: TextButton(
+                                          style: ButtonStyle(
+                                            backgroundColor: MaterialStateProperty.all(kBackgroundColor),
+                                            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                  borderRadius: BorderRadius.circular(18.0),
+                                                  side: const BorderSide(color: Colors.transparent)),
+                                            ),
+                                          ),
+                                          child: const Padding(
+                                            padding: EdgeInsets.all(5.0),
+                                            child: Center(
+                                                child: CircularProgressIndicator(
+                                              color: Colors.white,
+                                              // strokeWidth: 10,
+                                            )),
+                                          ),
+                                          onPressed: () {}),
+                                    );
+                                  } else {
+                                    return SizedBox(
+                                      width: MediaQuery.of(context).size.width / 1.6,
+                                      height: 40,
+                                      child: TextButton(
+                                        style: ButtonStyle(
+                                          backgroundColor: MaterialStateProperty.all(kBackgroundColor),
+                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(18.0),
+                                                side: const BorderSide(color: Colors.transparent)),
+                                          ),
+                                        ),
+                                        onPressed: () {
+                                          // ignore: always_specify_types
+                                          if (Form.of(context)!.validate()) {
+                                            StoreProvider.of<AppState>(context).dispatch(Register((AppAction action) {
+                                              _onResponse(context, action);
+                                            }));
+                                          }
+                                        },
+                                        child: const Text(
+                                          'Register',
+                                          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                                         ),
                                       ),
-                                      child: const Padding(
-                                        padding: EdgeInsets.all(5.0),
-                                        child: Center(
-                                            child: CircularProgressIndicator(
-                                          color: Colors.white,
-                                          // strokeWidth: 10,
-                                        )),
-                                      ),
-                                      onPressed: () {}),
-                                ),
+                                    );
+                                  }
+                                },
+                              ),
 
-                              if (!isLoading)
-                                SizedBox(
-                                  width: MediaQuery.of(context).size.width / 1.6,
-                                  height: 40,
-                                  child: TextButton(
-                                    style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(kBackgroundColor),
-                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(18.0),
-                                            side: const BorderSide(color: Colors.transparent)),
-                                      ),
-                                    ),
-                                    onPressed: () {
-                                      setState(() => isLoading = true);
-                                      // ignore: always_specify_types
-                                      Future.delayed(const Duration(seconds: 3), () {
-                                        if (Form.of(context)!.validate()) {
-                                          StoreProvider.of<AppState>(context).dispatch(Register((AppAction action) {
-                                            _onResponse(context, action);
-                                          }));
-                                        }
-                                      });
-                                    },
-                                    child: const Text(
-                                      'Register',
-                                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                                    ),
-                                  ),
-                                ),
                               const SizedBox(
                                 height: 10,
                               ),

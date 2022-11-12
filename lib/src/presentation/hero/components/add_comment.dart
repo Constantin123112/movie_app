@@ -20,6 +20,11 @@ class AddComment extends StatefulWidget {
 
 class _AddCommentState extends State<AddComment> {
   String commentTxt = '';
+  final TextEditingController fieldText = TextEditingController();
+
+  void clearText() {
+    fieldText.clear();
+  }
 
   void showAlertDialog(BuildContext context) {
 
@@ -76,6 +81,7 @@ class _AddCommentState extends State<AddComment> {
             child: SizedBox(
               height: 50,
               child: TextField(
+                controller: fieldText,
                 cursorColor: Colors.grey,
                 style: const TextStyle(color: Colors.grey, height: 1.5, fontSize: 16),
                 decoration: InputDecoration(
@@ -123,13 +129,13 @@ class _AddCommentState extends State<AddComment> {
                           ..displayName = user.displayName;
                       });
 
-                      setState(() { });
-
                       StoreProvider.of<AppState>(context).dispatch(AddCommentAction(comment));
                     }
                     else {
                       showAlertDialog(context);
                     }
+
+                    clearText();
                   },
                   child: const Icon(
                     Icons.send,

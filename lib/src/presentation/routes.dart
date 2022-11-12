@@ -14,7 +14,6 @@ class AppRoutes {
   static final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
     home: (BuildContext context) => const Home(),
     login: (BuildContext context) => const LoginPage(),
-    // photo_page: (BuildContext context) => const PhotoPage(),
     email_page: (BuildContext context) => const EmailPage(),
   };
 }

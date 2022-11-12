@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../models/auth/index.dart';
+import '../models/index.dart';
 
 class AuthApi {
   const AuthApi({
@@ -53,18 +54,16 @@ class AuthApi {
     String photoUrl = '';
     final FileUploadInputElement input = FileUploadInputElement()..accept = 'image/*';
     input.click();
-    input.onChange.listen((Event event) {
+      input.onChange.listen((Event event) {
       final File? file = input.files?.first;
       final FileReader reader = FileReader();
       reader.readAsDataUrl(file!);
-      reader.onLoadEnd.listen((ProgressEvent event) async {
-        final TaskSnapshot snapshot = await _firebaseStorage.ref().child(email).putBlob(file);
-        final String downloadUrl = await snapshot.ref.getDownloadURL(); // imageUrl = downloadUrl;
-        photoUrl = downloadUrl;
-        // StoreProvider.of<AppState>(context).dispatch(UpdateRegisterInfo(photoUrl: downloadUrl));
+        reader.onLoadEnd.listen((ProgressEvent event) async {
+          final TaskSnapshot snapshot = await _firebaseStorage.ref().child(email).putBlob(file);
+          final String downloadUrl = await snapshot.ref.getDownloadURL(); // imageUrl = downloadUrl;
+          photoUrl = downloadUrl;
+        });
       });
-    });
-
     return photoUrl;
   }
 

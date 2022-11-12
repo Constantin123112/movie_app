@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
 
 import '../../actions/index.dart';
+import '../../containers/auth/index.dart';
 import '../../models/index.dart';
 import '../../utils/constants.dart';
 import '../mixins/dialog_mixin.dart';
@@ -20,7 +21,7 @@ class _LoginPageState extends State<LoginPage> with DialogMixin {
   String _email = '';
   String _password = '';
 
-  bool isLoading = false;
+  // bool isLoading = false;
 
   void _response(AppAction action, BuildContext context) {
     if (action is LoginError) {
@@ -178,62 +179,61 @@ class _LoginPageState extends State<LoginPage> with DialogMixin {
                               ),
                             ),
 
-                            // Sign In
-                            if (isLoading)
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.6,
-                                height: 40,
-                                child: TextButton(
-                                    style: ButtonStyle(
-                                      backgroundColor: MaterialStateProperty.all(kBackgroundColor),
-                                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(18.0),
-                                            side: const BorderSide(color: Colors.transparent)),
+                            IsLoadingContainer(
+                              builder: (BuildContext context, bool isLoadingAuth) {
+                                if (isLoadingAuth) {
+                                  return SizedBox(
+                                    width: MediaQuery.of(context).size.width / 1.6,
+                                    height: 40,
+                                    child: TextButton(
+                                        style: ButtonStyle(
+                                          backgroundColor: MaterialStateProperty.all(kBackgroundColor),
+                                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                            RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.circular(18.0),
+                                                side: const BorderSide(color: Colors.transparent)),
+                                          ),
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(5.0),
+                                          child: Center(
+                                              child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            // strokeWidth: 10,
+                                          )),
+                                        ),
+                                        onPressed: () {}),
+                                  );
+                                } else {
+                                  return SizedBox(
+                                    width: MediaQuery.of(context).size.width / 1.6,
+                                    height: 40,
+                                    child: TextButton(
+                                      style: ButtonStyle(
+                                        backgroundColor: MaterialStateProperty.all(kBackgroundColor),
+                                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                          RoundedRectangleBorder(
+                                              borderRadius: BorderRadius.circular(18.0),
+                                              side: const BorderSide(color: Colors.transparent)),
+                                        ),
                                       ),
+                                      child: const Text(
+                                        'Sign In',
+                                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                                      ),
+                                      onPressed: () {
+                                        StoreProvider.of<AppState>(context).dispatch(Login(
+                                          email: _email,
+                                          password: _password,
+                                          response: (AppAction action) => _response(action, context),
+                                        ));
+                                      },
                                     ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(5.0),
-                                      child: Center(
-                                          child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        // strokeWidth: 10,
-                                      )),
-                                    ),
-                                    onPressed: () {}),
-                              ),
-
-                            if (!isLoading)
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.6,
-                                height: 40,
-                                child: TextButton(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all(kBackgroundColor),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(18.0),
-                                          side: const BorderSide(color: Colors.transparent)),
-                                    ),
-                                  ),
-                                  child: const Text(
-                                    'Sign In',
-                                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                                  ),
-                                  onPressed: () {
-                                    setState(() => isLoading = true);
-                                    // ignore: always_specify_types
-                                    Future.delayed(const Duration(seconds: 3), () {
-                                      setState(() => isLoading = false);
-                                      StoreProvider.of<AppState>(context).dispatch(Login(
-                                        email: _email,
-                                        password: _password,
-                                        response: (AppAction action) => _response(action, context),
-                                      ));
-                                    });
-                                  },
-                                ),
-                              ),
+                                  );
+                                }
+                              },
+                            ),
+                            // Sign In
 
                             // Register
                             Text.rich(

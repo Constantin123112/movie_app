@@ -6,6 +6,7 @@ import '../models/index.dart';
 Reducer<AuthState> authReducer = combineReducers(<Reducer<AuthState>>[
   TypedReducer<AuthState, Login$>(_loginStart),
   TypedReducer<AuthState, LoginSuccessful>(_loginSuccessful),
+  TypedReducer<AuthState, LoginError>(_loginError),
   TypedReducer<AuthState, Register$>(_registerStart),
   TypedReducer<AuthState, RegisterSuccessful>(_registerSuccessful),
   TypedReducer<AuthState, UpdateRegisterInfo>(_updateRegisterInfo),
@@ -25,6 +26,10 @@ AuthState _loginSuccessful(AuthState state, LoginSuccessful action) {
       ..isLoading = false
       ..user = action.user.toBuilder();
   });
+}
+
+AuthState _loginError(AuthState state, LoginError action) {
+  return state.rebuild((AuthStateBuilder b) => b.isLoading = false);
 }
 
 AuthState _registerStart(AuthState state, Register$ action) {
@@ -75,7 +80,7 @@ AuthState _uploadImageSuccessful(AuthState state, UploadImageSuccessful action) 
   return state.rebuild((AuthStateBuilder b) {
     b
       ..isLoading = false
-      ..uploadPhotoUrl = action.photoUrl
-      ..info.photoUrl = action.photoUrl;
+      ..uploadPhotoUrl = action.photoUrl;
+      // ..info.photoUrl = action.photoUrl;
   });
 }
